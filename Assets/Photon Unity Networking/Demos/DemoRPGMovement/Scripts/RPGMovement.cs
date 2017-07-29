@@ -21,6 +21,7 @@ public class RPGMovement : MonoBehaviour
 
     void Start()
     {
+        Debug.Log("Movement start()");
         m_CharacterController = GetComponent<CharacterController>();
         m_Animator = GetComponent<Animator>();
         m_PhotonView = GetComponent<PhotonView>();
@@ -29,8 +30,10 @@ public class RPGMovement : MonoBehaviour
 
     void Update()
     {
-        if( m_PhotonView.isMine == true )
+        
+        if ( m_PhotonView.isMine == true )
         {
+            Debug.Log("Movement Update(if)");
             ResetSpeedValues();
 
             UpdateRotateMovement();
@@ -44,12 +47,17 @@ public class RPGMovement : MonoBehaviour
 
             ApplySynchronizedValues();
         }
+        else
+        {
+            Debug.Log("--------------Movement Update()");
+        }
 
         UpdateAnimation();
     }
 
     void UpdateAnimation()
     {
+        //Debug.Log("Movement UPdateAnimation()");
         Vector3 movementVector = transform.position - m_LastPosition;
 
         float speed = Vector3.Dot( movementVector.normalized, transform.forward );
@@ -84,28 +92,33 @@ public class RPGMovement : MonoBehaviour
 
     void ResetSpeedValues()
     {
+        //Debug.Log("Movement ResetSpeedValue()");
         m_CurrentMovement = Vector3.zero;
         m_CurrentTurnSpeed = 0;
     }
 
     void ApplySynchronizedValues()
     {
+        //Debug.Log("Movement ApplySynchronizedV()");
         m_TransformView.SetSynchronizedValues( m_CurrentMovement, m_CurrentTurnSpeed );
     }
 
     void ApplyGravityToCharacterController()
     {
+       // Debug.Log("Movement ApplyGravityToCharac()");
         m_CharacterController.Move( transform.up * Time.deltaTime * -9.81f );
     }
 
     void MoveCharacterController()
     {
+        //Debug.Log("Movement MoveCharacterC()");
         m_CharacterController.Move( m_CurrentMovement * Time.deltaTime );
     }
 
     void UpdateForwardMovement()
     {
-        if( Input.GetKey( KeyCode.W ) || Input.GetAxisRaw("Vertical") > 0.1f )
+        //Debug.Log("Movement UPdateForwardMovement");
+        if ( Input.GetKey( KeyCode.W ) || Input.GetAxisRaw("Vertical") > 0.1f )
         {
             m_CurrentMovement = transform.forward * ForwardSpeed;
         }
@@ -113,7 +126,8 @@ public class RPGMovement : MonoBehaviour
 
     void UpdateBackwardMovement()
     {
-        if( Input.GetKey( KeyCode.S ) || Input.GetAxisRaw("Vertical") < -0.1f )
+       // Debug.Log("Movement UpdateBackwardMovement()");
+        if ( Input.GetKey( KeyCode.S ) || Input.GetAxisRaw("Vertical") < -0.1f )
         {
             m_CurrentMovement = -transform.forward * BackwardSpeed;
         }
@@ -121,7 +135,8 @@ public class RPGMovement : MonoBehaviour
 
     void UpdateStrafeMovement()
     {
-        if( Input.GetKey( KeyCode.Q ) == true )
+       // Debug.Log("Movement UPdateStrafeMovement");
+        if ( Input.GetKey( KeyCode.Q ) == true )
         {
             m_CurrentMovement = -transform.right * StrafeSpeed;
         }
@@ -134,7 +149,8 @@ public class RPGMovement : MonoBehaviour
 
     void UpdateRotateMovement()
     {
-        if( Input.GetKey( KeyCode.A ) || Input.GetAxisRaw("Horizontal") < -0.1f )
+        //Debug.Log("Movement UpdateRotateMovement");
+        if ( Input.GetKey( KeyCode.A ) || Input.GetAxisRaw("Horizontal") < -0.1f )
         {
             m_CurrentTurnSpeed = -RotateSpeed;
             transform.Rotate(0.0f, -RotateSpeed * Time.deltaTime, 0.0f);
